@@ -3,7 +3,7 @@
 	xmlns="http://www.uptimesoftware.com/erdc/erdc" xmlns:upt="http://www.uptimesoftware.com/erdc/erdc"
 	version="4.0" target_grouping="other">
 
-	<class>SSL Certificate Expiry</class>
+	<class>SSL Expiry Check</class>
 	<exec>JAVA_PLUGIN:UptimeSSLCertificateExpiry</exec>
 	<erdc_version>1.0</erdc_version>
 	<category>Network Service Monitors</category>
@@ -34,7 +34,7 @@
 		</element>
 
 		<element name="expiryDate" parameter_type="output" data_type="string" gui_basic="1"
-			range_type="0" units="days">
+			range_type="0" units="">
 			<control_options>size:40</control_options>
 			<default_value />
 			<short_description>Expiry Date</short_description>
@@ -60,7 +60,7 @@
 		</element>
 
 		<element name="httpResponse" parameter_type="output" data_type="string" gui_basic="1"
-			range_type="0" units="days">
+			range_type="0" units="">
 			<control_options>size:40</control_options>
 			<default_value />
 			<short_description>HTTP Response</short_description>
