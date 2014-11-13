@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<project name="ssl-certificate-expiry" default="dist" basedir=".">
+
+	<path id="compile.classpath">
+		<fileset dir="lib">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="lib/compile">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<target name="init">
+		<echo message="-------------------- build.xml --------------------" />
+	</target>
+
+	<target name="compile" depends="init">
+		<javac destdir="classes" debug="true" srcdir="src" nowarn="false" optimize="false" deprecation="true" target="1.7" verbose="false" fork="false" source="1.7" includeantruntime="false">
+			<classpath refid="compile.classpath" />
+		</javac>
+	</target>
+
+	<target name="dist" depends="compile">
+		<zip destfile="dist/tmp/ssl-certificate-expiry.zip">
+			<zipfileset dir="classes" prefix="classes" />
+			<zipfileset dir="lib" prefix="lib" excludes="compile/**" />
+			<zipfileset dir="META-INF" prefix="classes/META-INF" />
+		</zip>
+		<zip destfile="dist/ssl-certificate-expiry.zip">
+			<zipfileset dir="definition" />
+			<zipfileset file="dist/tmp/ssl-certificate-expiry.zip" prefix="files/plugins/java" />
+		</zip>
+		<copy todir="pkg">
+			<fileset dir="definition" />
+		</copy>
+		
+		<delete dir="dist/tmp" />
+	</target>	
+
+	<target name="clean">
+		<delete dir="dist/tmp" />
+	</target>
+
+</project>
