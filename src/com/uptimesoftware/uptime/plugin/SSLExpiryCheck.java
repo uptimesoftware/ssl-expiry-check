@@ -181,6 +181,7 @@ public class SSLExpiryCheck extends Plugin {
 		 */
 		void addRangedVariables(Certificate[] certs) {
 			Map<TimeUnit, Long> dateMap = null;
+			int counter = 0;
 
 			for (Certificate cert : certs) {
 				addVariable(EXPIRY_DATE, ((X509Certificate) cert).getNotAfter().toString());
@@ -188,12 +189,13 @@ public class SSLExpiryCheck extends Plugin {
 				PluginMonitorVariable pmv = new PluginMonitorVariable();
 				pmv.setName(EXPIRY_REMAINING_DAYS);
 				// Issuer_name.expiry_remaining_days
-				pmv.setObjectName(((X509Certificate) cert).getIssuerX500Principal().getName() + "."
-						+ EXPIRY_REMAINING_DAYS);
+				pmv.setObjectName("cert" + counter + "." + EXPIRY_REMAINING_DAYS);
 
 				dateMap = computeDiff(new Date(), ((X509Certificate) cert).getNotAfter());
 
 				pmv.setValue(dateMap.get(TimeUnit.DAYS).toString());
+				addVariable(pmv);
+				counter++;
 			}
 		}
 
