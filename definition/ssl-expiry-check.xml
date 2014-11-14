@@ -4,7 +4,7 @@
 	version="4.0" target_grouping="other">
 
 	<class>SSL Expiry Check</class>
-	<exec>JAVA_PLUGIN:UptimeSSLCertificateExpiry</exec>
+	<exec>JAVA_PLUGIN:UptimeSSLExpiryCheck</exec>
 	<erdc_version>1.0</erdc_version>
 	<category>Network Service Monitors</category>
 	<category_related>Applications - Web Services</category_related>
@@ -33,6 +33,19 @@
 			</gui_type>
 		</element>
 
+		<element name="httpResponse" parameter_type="output" data_type="string" gui_basic="1"
+			range_type="0" units="">
+			<control_options>size:40</control_options>
+			<default_value />
+			<short_description>HTTP Response</short_description>
+			<long_description>HTTP Response</long_description>
+			<validation_rule />
+			<error_message />
+			<gui_type>
+				<string />
+			</gui_type>
+		</element>
+
 		<element name="expiryDate" parameter_type="output" data_type="string" gui_basic="1"
 			range_type="0" units="">
 			<control_options>size:40</control_options>
@@ -46,7 +59,7 @@
 			</gui_type>
 		</element>
 
-		<element name="expiryRemainingDays" parameter_type="output" data_type="integer" gui_basic="1"
+		<element name="expiryRemainingDays" parameter_type="output" data_type="ranged" gui_basic="1"
 			range_type="0" units="days">
 			<control_options>size:8</control_options>
 			<default_value />
@@ -58,20 +71,7 @@
 				<integer />
 			</gui_type>
 		</element>
-
-		<element name="httpResponse" parameter_type="output" data_type="string" gui_basic="1"
-			range_type="0" units="">
-			<control_options>size:40</control_options>
-			<default_value />
-			<short_description>HTTP Response</short_description>
-			<long_description>HTTP Response</long_description>
-			<validation_rule />
-			<error_message />
-			<gui_type>
-				<string />
-			</gui_type>
-		</element>
 	</elements>
 
-	<help></help>
+	<help>Check SSL Certificate Expiry date.</help>
 </uptime>

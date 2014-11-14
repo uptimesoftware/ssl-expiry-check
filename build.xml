@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<project name="ssl-certificate-expiry" default="dist" basedir=".">
+<project name="ssl-expiry-check" default="dist" basedir=".">
 
 	<path id="compile.classpath">
 		<fileset dir="lib">
@@ -21,14 +21,14 @@
 	</target>
 
 	<target name="dist" depends="compile">
-		<zip destfile="dist/tmp/ssl-certificate-expiry.zip">
+		<zip destfile="dist/tmp/ssl-expiry-check.zip">
 			<zipfileset dir="classes" prefix="classes" />
 			<zipfileset dir="lib" prefix="lib" excludes="compile/**" />
 			<zipfileset dir="META-INF" prefix="classes/META-INF" />
 		</zip>
-		<zip destfile="dist/ssl-certificate-expiry.zip">
+		<zip destfile="dist/ssl-expiry-check.zip">
 			<zipfileset dir="definition" />
-			<zipfileset file="dist/tmp/ssl-certificate-expiry.zip" prefix="files/plugins/java" />
+			<zipfileset file="dist/tmp/ssl-expiry-check.zip" prefix="files/plugins/java" />
 		</zip>
 		<copy todir="pkg">
 			<fileset dir="definition" />

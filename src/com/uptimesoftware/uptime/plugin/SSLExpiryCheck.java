@@ -3,6 +3,8 @@ package com.uptimesoftware.uptime.plugin;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -14,6 +16,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLPeerUnverifiedException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,20 +27,21 @@ import com.uptimesoftware.uptime.plugin.api.Plugin;
 import com.uptimesoftware.uptime.plugin.api.PluginMonitor;
 import com.uptimesoftware.uptime.plugin.monitor.MonitorState;
 import com.uptimesoftware.uptime.plugin.monitor.Parameters;
+import com.uptimesoftware.uptime.plugin.monitor.PluginMonitorVariable;
 
 /**
- * SSLCertificateExpiry
+ * SSLExpiryCheck
  * 
  * @author uptime software
  */
-public class SSLCertificateExpiry extends Plugin {
+public class SSLExpiryCheck extends Plugin {
 
 	/**
 	 * Constructor - a plugin wrapper.
 	 * 
 	 * @param wrapper
 	 */
-	public SSLCertificateExpiry(PluginWrapper wrapper) {
+	public SSLExpiryCheck(PluginWrapper wrapper) {
 		super(wrapper);
 	}
 
@@ -51,10 +55,10 @@ public class SSLCertificateExpiry extends Plugin {
 	 * into the monitor's configuration page in Up.time.
 	 */
 	@Extension
-	public static class UptimeSSLCertificateExpiry extends PluginMonitor {
+	public static class UptimeSSLExpiryCheck extends PluginMonitor {
 		// Logger object.
 		private static final Logger logger = LoggerFactory
-				.getLogger(UptimeSSLCertificateExpiry.class);
+				.getLogger(UptimeSSLExpiryCheck.class);
 
 		// Monitor message.
 		private String monitorMessage = "";
@@ -70,6 +74,7 @@ public class SSLCertificateExpiry extends Plugin {
 		static final String EXPIRY_DATE = "expiryDate";
 		static final String EXPIRY_REMAINING_DAYS = "expiryRemainingDays";
 		static final String HTTP_RESPONSE = "httpResponse";
+		static final String ISSUER_NAME = "issuerName";
 
 		/**
 		 * The setParameters function will accept a Parameters object containing the values filled
@@ -102,16 +107,24 @@ public class SSLCertificateExpiry extends Plugin {
 				return;
 			}
 
-			logger.debug("Calculate date difference.");
-			Map<TimeUnit, Long> dateMap = computeDiff(conn.getDate(), conn.getExpiration());
+			logger.debug("Get server certificates with a given HttpsURLConnection.");
+			Certificate[] certs = getServerCertificates(conn);
 
-			addVariable(EXPIRY_DATE, (new Date(conn.getExpiration())).toString());
-			addVariable(EXPIRY_REMAINING_DAYS, dateMap.get(TimeUnit.DAYS));
+			logger.debug("Check if the certs array is empty or not.");
+			if (certs == null || certs.length == 0) {
+				setStateAndMessage(MonitorState.UNKNOWN, monitorMessage);
+				return;
+			}
+
 			try {
 				addVariable(HTTP_RESPONSE, conn.getResponseCode());
 			} catch (IOException e) {
 				logger.error("IO error occurred.", e);
+				return;
 			}
+
+			logger.debug("Add ranged type variables.");
+			addRangedVariables(certs);
 
 			setStateAndMessage(MonitorState.OK, "Monitor ran successfully.");
 		}
@@ -141,6 +154,49 @@ public class SSLCertificateExpiry extends Plugin {
 		}
 
 		/**
+		 * Get server certificates with a given HttpsURLConnection instance.
+		 * 
+		 * @param conn
+		 *            HttpsURLConnection instance.
+		 * @return An array of server certificates.
+		 */
+		Certificate[] getServerCertificates(HttpsURLConnection conn) {
+			Certificate[] certs = null;
+			try {
+				certs = conn.getServerCertificates();
+			} catch (SSLPeerUnverifiedException e) {
+				monitorMessage = "Failed to retrieve Server Certificates";
+				logger.error(monitorMessage, e);
+				return certs;
+			}
+			return certs;
+		}
+
+		/**
+		 * Add Ranged type variables to Up.Time.
+		 * 
+		 * @param certs
+		 *            An array of certificates.
+		 */
+		void addRangedVariables(Certificate[] certs) {
+			Map<TimeUnit, Long> dateMap = null;
+
+			for (Certificate cert : certs) {
+				addVariable(EXPIRY_DATE, ((X509Certificate) cert).getNotAfter().toString());
+
+				PluginMonitorVariable pmv = new PluginMonitorVariable();
+				pmv.setName(EXPIRY_REMAINING_DAYS);
+				// Issuer_name.expiry_remaining_days
+				pmv.setObjectName(((X509Certificate) cert).getIssuerX500Principal().getName() + "."
+						+ EXPIRY_REMAINING_DAYS);
+
+				dateMap = computeDiff(new Date(), ((X509Certificate) cert).getNotAfter());
+
+				pmv.setValue(dateMap.get(TimeUnit.DAYS).toString());
+			}
+		}
+
+		/**
 		 * Calculate time difference.
 		 * 
 		 * @param dateOne
@@ -149,8 +205,8 @@ public class SSLCertificateExpiry extends Plugin {
 		 *            expiry date in long.
 		 * @return Time difference of two dates in Map with TimeUnit and its value.
 		 */
-		Map<TimeUnit, Long> computeDiff(long dateOne, long dateTwo) {
-			long diffInMillies = dateTwo - dateOne;
+		Map<TimeUnit, Long> computeDiff(Date dateOne, Date dateTwo) {
+			long diffInMillies = dateTwo.getTime() - dateOne.getTime();
 			List<TimeUnit> units = new ArrayList<TimeUnit>(EnumSet.allOf(TimeUnit.class));
 			Collections.reverse(units);
 
