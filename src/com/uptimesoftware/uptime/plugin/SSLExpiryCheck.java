@@ -57,8 +57,7 @@ public class SSLExpiryCheck extends Plugin {
 	@Extension
 	public static class UptimeSSLExpiryCheck extends PluginMonitor {
 		// Logger object.
-		private static final Logger logger = LoggerFactory
-				.getLogger(UptimeSSLExpiryCheck.class);
+		private static final Logger logger = LoggerFactory.getLogger(UptimeSSLExpiryCheck.class);
 
 		// Monitor message.
 		private String monitorMessage = "";
@@ -141,6 +140,7 @@ public class SSLExpiryCheck extends Plugin {
 			try {
 				conn = (HttpsURLConnection) (new URL((String) inputs.get(HTTPS_URL)))
 						.openConnection();
+				conn.connect();
 			} catch (MalformedURLException e) {
 				monitorMessage = "Wrong URL format is used.";
 				logger.error(monitorMessage, e);
@@ -164,6 +164,7 @@ public class SSLExpiryCheck extends Plugin {
 			Certificate[] certs = null;
 			try {
 				certs = conn.getServerCertificates();
+				conn.disconnect();
 			} catch (SSLPeerUnverifiedException e) {
 				monitorMessage = "Failed to retrieve Server Certificates";
 				logger.error(monitorMessage, e);
