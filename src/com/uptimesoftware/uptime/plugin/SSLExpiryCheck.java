@@ -184,6 +184,8 @@ public class SSLExpiryCheck extends Plugin {
 			int counter = 0;
 
 			for (Certificate cert : certs) {
+				addVariable(ISSUER_NAME, ((X509Certificate) cert).getIssuerX500Principal()
+						.getName());
 				addVariable(EXPIRY_DATE, ((X509Certificate) cert).getNotAfter().toString());
 
 				PluginMonitorVariable pmv = new PluginMonitorVariable();
