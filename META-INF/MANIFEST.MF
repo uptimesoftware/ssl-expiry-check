@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Built-By: syoon
 Build-Jdk: 1.7.0_67-b01
-Plugin-Class: com.uptimesoftware.uptime.plugin.SSLCertificateExpiry
+Plugin-Class: com.uptimesoftware.uptime.plugin.SSLExpiryCheck
 Plugin-Version: 1.0
-Plugin-Id: ssl-certificate-expiry
+Plugin-Id: ssl-expiry-check
 Plugin-Provider: Uptime Software
