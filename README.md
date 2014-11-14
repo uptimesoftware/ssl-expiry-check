@@ -1,4 +1,1 @@
-ssl-certificate-expiry
-======================
-
-ssl-certificate-expiry
+ssl-expiry-check
