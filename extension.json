@@ -1,0 +1,22 @@
+[
+{
+  "category": "Network Service Monitors",
+  "supported_versions": [
+    "7.3"
+  ],
+  "name": "SSL Expiry Check",
+  "git_file_target": "https://github.com/uptimesoftware/ssl-expiry-check/raw/master/dist/ssl-expiry-check.zip",
+  "icon_url": "http://the-grid.uptimesoftware.com/img/posts/placeholder-logo.png",
+  "upgrade_in_place": true,
+  "requires_additional_setup": false,
+  "requires_agent_scripts": false,
+  "version": "1.1",
+  "supported_platforms": [
+    "windows",
+    "linux"
+  ],
+  "grid_url_target": "http://the-grid.uptimesoftware.com/",
+  "type": "plugin",
+  "description": "SSL Expiry Check"
+}
+]
