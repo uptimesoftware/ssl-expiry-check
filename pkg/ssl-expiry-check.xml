@@ -19,7 +19,7 @@
 		<element name="httpsURL" parameter_type="input" data_type="string" gui_basic="1"
 			range_type="0">
 			<control_options>size:40</control_options>
-			<default_value />
+			<default_value>https://www.google.com</default_value>
 			<short_description>HTTPS URL</short_description>
 			<long_description>HTTPS URL</long_description>
 			<validation_rule>
