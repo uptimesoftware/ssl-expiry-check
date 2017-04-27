@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<uptime xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.uptimesoftware.com/erdc/erdc erdc"
-	xmlns="http://www.uptimesoftware.com/erdc/erdc" xmlns:upt="http://www.uptimesoftware.com/erdc/erdc"
-	version="4.0" target_grouping="other">
-
-	<class>SSL Expiry Check</class>
+<uptime xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.0" target_grouping="other">	<class>SSL Expiry Check</class>
 	<exec>JAVA_PLUGIN:UptimeSSLExpiryCheck</exec>
 	<erdc_version>1.0</erdc_version>
-	<category>Network Service Monitors</category>
-	<category_related>Applications - Web Services</category_related>
+	<category>Applications - Web Services</category>
 	<grid_info>
 		<supported_versions>7.3,7.4,7.5,7.6,7.7,7.8</supported_versions>
 		<supported_platforms>windows, linux</supported_platforms>
 		<upgrade_in_place>true</upgrade_in_place>
 		<requires_agent_scripts>false</requires_agent_scripts>
 	</grid_info>
-
 	<elements>
 		<element name="httpsURL" parameter_type="input" data_type="string" gui_basic="1"
 			range_type="0">
